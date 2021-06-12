@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto">
+
+
+
+{% for q in questions %}
+
+<h4>{{page_num}}. {{q.question_text}}</h4>
+<br>
+
+    {% for choice in q.choice_set.all %}
+    <form action="" method="POST">
+    
+        {% csrf_token %}
+        <input type="radio" id="choice{{ forloop.counter }}" name="choice" value="{{ choice.id }}">
+        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label>
+  
+        <br>
+    
+       
+        {% endfor %}
+        
+        
+<button type="submit" class="btn btn-warning btn-md" >Submit</button>
+    
+    </form>
+    {% endfor %}
+
+
+<div class="pt-2">
+    <ol class="pagination pagination-sm">
+        {% if questions.has_previous %}
+        <li class="page-item"><a class="page-link"
+                href="?page={{ questions.paginator.previous_page_number }}">&laquo;</a></li>
+        {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+        {% endif %}
+        {% for i in paginator.page_range %}
+        <li class="page-item {% if i == page_num  %} active {% endif %}">
+            <a href="?page={{i}}" class="page-link">{{ i }}</a>
+        </li>
+        {% endfor %}
+        {% if page.has_next %}
+        <li class="page-item"><a class="page-link"
+                href="?page={{ questions.paginator.next_page_number }}">&raquo;</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">&raquo;</a></li>
+        {% endif %}
+    </ol>
+</div>
+</div>
+
+<script>
+    button = document.querySelector('.btn');
+    button.addEventListener('click', getChoices);
+    var arr = []
+    function getChoices(){
+    
+        var user_choice = document.getElementsByName('choice');
+        for(i=0; i<user_choice.length; i++){
+            if (user_choice[i].type="radio"){
+                if(user_choice[i].checked){
+                    answer = user_choice[i].value
+                    arr.push(answer)
+                    
+                }
+               
+            }
+            
+    
+           
+        }
+        
+        console.log(arr)
+        // e.preventDefault();
+    
+    }
+    getChoices();
+
+</script>
+
+{% endblock %}
